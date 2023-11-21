@@ -1,0 +1,38 @@
+package captcha
+
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"gkk/cache"
+	"gkk/captcha"
+	"gkk/code"
+	"gkk/expect"
+	"gkk/tool"
+	"time"
+)
+
+const key = "cache:captcha:"
+
+func Create(app string) map[string]string {
+	id := tool.Generate("CC")
+	value, item := captcha.DrawCaptcha()
+	if gin.IsDebugging() {
+		fmt.Println(value)
+	}
+	expect.PBM(cache.Get().Set(key+":"+app+id, value, time.Second*60) != nil, "")
+	return map[string]string{
+		"key":    id,
+		"base64": item.EncodeB64(),
+	}
+}
+
+func Check(app, id, value string) {
+	var c string
+	if e := cache.Get().Get(key+":"+app+id, &c); e != nil {
+		expect.PMC("验证码过期", code.CODE_EXPIRE)
+	} else {
+		if c != value {
+			expect.PMC("验证码错误", code.CODE_WRONG)
+		}
+	}
+}

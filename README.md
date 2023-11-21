@@ -9,8 +9,6 @@
 <br>
 ✅ 接口文档自动生成
 <br>
-✅ RPC 服务
-<br>
 ✅ Cron 定时器
 <br>
 ✅ 服务优雅关闭
@@ -27,21 +25,11 @@
 <br>
 ✅ redis/mem 定时限流 的接口验证码解锁
 <br>
-✅ nsq 消息队列
-<br>
 ✅ 数字 Captcha 生成
 <br>
-✅ 告警通知
-<br>
-✅ 服务注册/服务发现
+
 <br>
 <br><br>
-
-## 后续逐渐支持
-
-分布式链路追踪  
-分布式锁  
-代码生成
 
 # 目录结构
 
@@ -91,37 +79,24 @@
 ├── go.mod
 ├── go.sum
 ├── http.go
-├── json
-│   ├── decode.go
+├── js
 │   ├── encode.go
 │   ├── fold.go
 │   ├── indent.go
 │   ├── scanner.go
-│   ├── stream.go
 │   ├── tables.go
 │   └── tags.go
 ├── logger
 │   ├── errMsg.go
-│   ├── formater.go
 │   └── logger.go
-├── mapcon.go
 ├── middle
 │   ├── cors.go
-│   ├── log.go
 │   └── recovery.go
 ├── new.go
-├── queue
-│   ├── customer.go
-│   └── producer.go
 ├── req
 │   ├── req.go
 │   ├── res.go
 │   └── valid.go
-├── rpc
-│   ├── client.go
-│   ├── common.go
-│   ├── path.go
-│   └── server.go
 ├── str
 │   └── string.go
 ├── tool
@@ -138,38 +113,26 @@
 配置格式如下
 
 ```
-x-point-v2:
-  rpc:
-    port: 8400
+app1:
   gin:
     mode: debug
     port: 8401
   db:
-    name: x-point-v2
+    name: x
   custom:
-    domain: "point.wukongkeyan.com"
+    domain: 
     num: 123
     title: 测试
 
 default: //系统默认项目
-  qn:  # 七牛云
-    host: "https://qn-oss.wukongkeyan.com/"
-    ak: "3j07WBNxUhb1YAoQq9jGnUguYoBQZfCx"
-    sk: "y-Zi3WCMcggJRbYq8oYsIVBlx7"
-    sc: "guogao"
-    st: "z2"
   cache:
     host: "127.0.0.1:6379"  //tcp链接
     db: 1  //不配置默认使用0
-  queue:
-    producer: "127.0.0.1:4150"
-    customer:
-      - "127.0.0.1:4161"
   db:
     db: postgres
     user: postgres
-    password: Ruanyan~2017
-    host: 106.14.248.162
+    password: qwert
+    host: localhost
     port: 5432
     MaxIdle: 20
     MaxOpen: 20
@@ -293,9 +256,9 @@ func PDM(db *gorm.DB, msgs ...string)
 基于 logrus 二次封装，抽象统一接口、RPC 调用日志结构，便于后期日志收集和搜索
 
 ```
-{"app":"x-wukong-mini-backend","code":200,"ip":"192.168.10.98","level":"info","method":"GET","msg":"Gin","period":"31.449944ms","time":"2022-02-17T11:19:44+08:00","url":"/api/v1/setting"}
-{"app":"x-wukong-mini-backend","code":200,"ip":"192.168.10.98","level":"info","method":"GET","msg":"Gin","period":"27.957655ms","time":"2022-02-17T11:19:44+08:00","url":"/api/v1/order/price?type=会员"}
-{"app":"x-wukong-mini-backend","code":200,"ip":"192.168.10.98","level":"info","method":"GET","msg":"Gin","period":"91.255677ms","time":"2022-02-17T11:19:44+08:00","url":"/api/v1/user"}
+{"code":200,"ip":"192.168.10.98","level":"info","method":"GET","msg":"Gin","period":"31.449944ms","time":"2022-02-17T11:19:44+08:00","url":"/api/v1/setting"}
+{"code":200,"ip":"192.168.10.98","level":"info","method":"GET","msg":"Gin","period":"27.957655ms","time":"2022-02-17T11:19:44+08:00","url":"/api/v1/order/price?type=会员"}
+{"code":200,"ip":"192.168.10.98","level":"info","method":"GET","msg":"Gin","period":"91.255677ms","time":"2022-02-17T11:19:44+08:00","url":"/api/v1/user"}
 ```
 
 # GIN 服务
@@ -447,71 +410,6 @@ GET： /api/doc 获取结果
 - 根据路由自动划分目录， 编写路由要做到有逻辑
 - 本地测试环境使用，保存生成的json
 
-# RPC 服务
-
-## 对 rpcx 进行了封装和使用方法重构
-
-```
-公用目录和文件说明
-├── client    //封装
-├── example   //使用示例
-│   └── xtcp
-│       └── client.go          func Upload(orderNo, url string){
-                                    arg := &XTCPArgs{
-                                        orderNo,
-                                        url,
-                                    }
-                                    rep := &rpc.Reply{}
-                                    rpc.Call(arg, rep)
-                                }
-
-                                func init() {
-                                    rpc.Connect(XTCPService)
-                                }
-
-├── service   //服务参数
-│   └── xtcp
-│       └── server.go           var XTCPService = rpc.Server{
-                                    "XTCPService",
-                                    "127.0.0.1:8405",
-                                }
-                                type XTCPArgs struct {
-                                    OrderNo     string
-                                    Url 		string
-                                }
-```
-
-## 服务器端：
-
-### 1 函数开始 defer reply.Recovery() 处理主动 panic 的异常
-
-func (x *XTCPService) XTCP(ctx context.Context, args *xtcp2order.XTCPArgs, reply *rpc.Reply) error{
-defer reply.Recovery()
-return nil
-
-### 2 返回的的 eror 自行处理，这里 reply *rpc.Reply 包含一下快捷方法：
-
-- M(msg string)
-- MC(msg string, code int) 指定返回错误信息和错误码
-- E(e error) bool
-- EMC(e error, msg string, code int) bool 当出现错误时，指定返回错误信息和错误码
-- EM(e error, msg string) bool
-- ED(e error, data any) 当正常时，指定返回数据
-
-### 服务注册：
-
-rpc.Register(new(rpc.XTCPService))
-
-- etcd 中 host 使用配置中的 rpc：host
-- 配置 rpc:mode 三种模式：release/空，debug，back(测试备用)
-
-## 客户端服务发现：
-
-定义 rpc 服务的地方执行以下：
-func init() {rpc.Connect(rpc.Server)}
-
-- 配置文件中 default:rpc_back:["AdminService"] 使用测试备用 rpc 服务
-- 
 
 # 数据缓存
 
@@ -598,31 +496,6 @@ func vv(key string, c *gin.Context){
         }
 ```
 
-# Nsq 消息队列
-
-使用方法
-
-```
-生产者：
-product := queue.NewProducer()
-product.Queue("topic",)
-延时消息
-product.QueueDelay("topic","message", time.minute)
-```
-
-```
-消费者：
-type bind struct {
-    From string
-    To   string
-}
-queue.NewCustmer("topic", func(body []byte) error {
-    var ss bind
-    json.Unmarshal(body, &ss)
-    fmt.Println(ss)
-    return nil
-})
-```
 
 # Captcha
 
@@ -670,8 +543,8 @@ func main(){
                     "11313",
                     "7000",
                     "6379",
-        x_wukong_mini_backend.Run, false,   //函数2，参数
-        x_point_v2.Run,                     //函数3
+        app1.Run, false,   //函数2，参数
+        app2.Run,                     //函数3
     )
 }
 ```
