@@ -2,13 +2,14 @@ package tool
 
 import (
 	"bytes"
-	"github.com/nfnt/resize"
 	"gkk/expect"
 	"image"
 	"image/draw"
 	"image/png"
 	"io"
 	"math"
+
+	"github.com/nfnt/resize"
 )
 
 const DEFAULT_MAX_WIDTH int = 320
@@ -29,18 +30,29 @@ func CreateThumbSize(r io.Reader, width, height int) *bytes.Buffer {
 	return res
 }
 
-func CombineImgs(imgs []io.Reader) *bytes.Buffer {
+func CombineImgs(imgs []*bytes.Buffer) *bytes.Buffer {
 	sideLen := IntSqrt(len(imgs))
+	if sideLen < 2 {
+		sideLen = 2
+	}
 	var w, h int
 	var canvas *image.RGBA
 	for i, img := range imgs {
-		imgt, _, _ := image.Decode(img)
+		imgt, _, err := image.Decode(img)
+		if err != nil {
+			return nil
+		}
 		width := imgt.Bounds().Max.X
+
 		height := imgt.Bounds().Max.Y
 		w1 := i % sideLen
 		h1 := i / sideLen
 		if i == 0 {
-			canvas = image.NewRGBA(image.Rect(0, 0, width*sideLen, height*sideLen))
+			if len(imgs) < 3 {
+				canvas = image.NewRGBA(image.Rect(0, 0, width*2, height))
+			} else {
+				canvas = image.NewRGBA(image.Rect(0, 0, width*sideLen, height*sideLen))
+			}
 			w = width
 			h = height
 		} else {
