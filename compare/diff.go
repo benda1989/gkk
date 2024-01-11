@@ -2,9 +2,10 @@ package compare
 
 import (
 	"fmt"
-	"gkk/str"
 	"reflect"
 	"strings"
+
+	"github.com/benda1989/gkk/str"
 )
 
 type JsonDiff struct {

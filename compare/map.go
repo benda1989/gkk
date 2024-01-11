@@ -2,7 +2,8 @@ package compare
 
 import (
 	"gkk"
-	"gkk/str"
+
+	"github.com/benda1989/gkk/str"
 )
 
 func Map(n, o map[string]any) map[string][]string {

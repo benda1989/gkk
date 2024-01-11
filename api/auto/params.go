@@ -2,16 +2,17 @@ package auto_gin
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"gkk/api"
-	"gkk/code"
-	"gkk/expect"
-	"gkk/logger"
-	"gkk/req"
-	"gkk/str"
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/benda1989/gkk/api"
+	"github.com/benda1989/gkk/code"
+	"github.com/benda1989/gkk/expect"
+	"github.com/benda1989/gkk/logger"
+	"github.com/benda1989/gkk/req"
+	"github.com/benda1989/gkk/str"
+	"github.com/gin-gonic/gin"
 )
 
 var search = []string{">", ">=", "<", "<=", "like"}

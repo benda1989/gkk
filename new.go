@@ -2,13 +2,14 @@ package gkk
 
 import (
 	"fmt"
-	"gkk/api"
-	"gkk/cache"
-	"gkk/config"
-	"gkk/cron"
-	"gkk/db"
-	"gkk/logger"
 	"reflect"
+
+	"github.com/benda1989/gkk/api"
+	"github.com/benda1989/gkk/cache"
+	"github.com/benda1989/gkk/config"
+	"github.com/benda1989/gkk/cron"
+	"github.com/benda1989/gkk/db"
+	"github.com/benda1989/gkk/logger"
 )
 
 var (

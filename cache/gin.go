@@ -2,12 +2,13 @@ package cache
 
 import (
 	"bytes"
-	"github.com/gin-gonic/gin"
-	"gkk/expect"
-	"gkk/logger"
-	"golang.org/x/sync/singleflight"
 	"net/http"
 	"time"
+
+	"github.com/benda1989/gkk/expect"
+	"github.com/benda1989/gkk/logger"
+	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/singleflight"
 )
 
 // gin装饰器，参数：缓存时间

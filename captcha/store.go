@@ -1,9 +1,10 @@
 package captcha
 
 import (
-	"gkk/cache"
 	"strings"
 	"time"
+
+	"github.com/benda1989/gkk/cache"
 )
 
 var c *DigitCaptcha

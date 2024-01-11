@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
-	"gkk/expect"
-	"gkk/tool"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
+
+	"github.com/benda1989/gkk/expect"
+	"github.com/benda1989/gkk/tool"
 
 	"gopkg.in/yaml.v3"
 )

@@ -3,10 +3,11 @@ package gkk
 import (
 	"bytes"
 	"encoding/json"
-	"gkk/code"
-	"gkk/expect"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/benda1989/gkk/code"
+	"github.com/benda1989/gkk/expect"
 )
 
 type ResponseJson struct {

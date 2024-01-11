@@ -1,9 +1,10 @@
 package doc
 
 import (
-	"gkk/str"
 	"reflect"
 	"strings"
+
+	"github.com/benda1989/gkk/str"
 )
 
 type structItem struct {

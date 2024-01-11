@@ -2,8 +2,9 @@ package db
 
 import (
 	"fmt"
-	"gkk/config"
-	"gkk/tool"
+
+	"github.com/benda1989/gkk/config"
+	"github.com/benda1989/gkk/tool"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

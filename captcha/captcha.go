@@ -5,7 +5,6 @@ import (
 	randbs "crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"gkk/expect"
 	"image"
 	"image/color"
 	"image/png"
@@ -13,6 +12,8 @@ import (
 	"math"
 	"math/rand"
 	"time"
+
+	"github.com/benda1989/gkk/expect"
 )
 
 const (

@@ -3,20 +3,21 @@ package gkk
 import (
 	"bytes"
 	"context"
-	"github.com/gin-gonic/gin"
-	"github.com/nfnt/resize"
-	"github.com/qiniu/go-sdk/v7/auth/qbox"
-	"github.com/qiniu/go-sdk/v7/storage"
-	"gkk/api"
-	"gkk/config"
-	"gkk/expect"
-	"gkk/req"
-	"gkk/tool"
 	"image"
 	"image/png"
 	"io/ioutil"
 	"math"
 	"strings"
+
+	"github.com/benda1989/gkk/api"
+	"github.com/benda1989/gkk/config"
+	"github.com/benda1989/gkk/expect"
+	"github.com/benda1989/gkk/req"
+	"github.com/benda1989/gkk/tool"
+	"github.com/gin-gonic/gin"
+	"github.com/nfnt/resize"
+	"github.com/qiniu/go-sdk/v7/auth/qbox"
+	"github.com/qiniu/go-sdk/v7/storage"
 )
 
 const DEFAULT_MAX_WIDTH float64 = 320

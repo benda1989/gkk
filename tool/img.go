@@ -2,12 +2,13 @@ package tool
 
 import (
 	"bytes"
-	"gkk/expect"
 	"image"
 	"image/draw"
 	"image/png"
 	"io"
 	"math"
+
+	"github.com/benda1989/gkk/expect"
 
 	"github.com/nfnt/resize"
 )

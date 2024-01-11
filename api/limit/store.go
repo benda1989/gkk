@@ -1,10 +1,11 @@
 package limit
 
 import (
-	"github.com/gin-gonic/gin"
-	"gkk/cache"
 	"sync"
 	"time"
+
+	"github.com/benda1989/gkk/cache"
+	"github.com/gin-gonic/gin"
 )
 
 type LimitOption interface {

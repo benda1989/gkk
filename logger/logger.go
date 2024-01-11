@@ -2,9 +2,10 @@ package logger
 
 import (
 	"fmt"
-	"gkk/config"
 	"os"
 	"time"
+
+	"github.com/benda1989/gkk/config"
 
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/sirupsen/logrus"

@@ -3,14 +3,15 @@ package doc
 import (
 	"bufio"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gkk/expect"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"os"
 	"runtime"
 	"strings"
+
+	"github.com/benda1989/gkk/expect"
+	"github.com/gin-gonic/gin"
 )
 
 const apiMarkDown = "apis.md"

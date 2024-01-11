@@ -1,14 +1,15 @@
 package auto_gin
 
 import (
-	"github.com/gin-gonic/gin"
 	"gkk"
-	"gkk/api"
-	"gkk/req"
-	"gkk/tool"
-	"gorm.io/gorm"
 	"reflect"
 	"strings"
+
+	"github.com/benda1989/gkk/api"
+	"github.com/benda1989/gkk/req"
+	"github.com/benda1989/gkk/tool"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 var defaultDB *gorm.DB

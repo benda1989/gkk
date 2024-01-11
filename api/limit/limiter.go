@@ -2,13 +2,14 @@ package limit
 
 import (
 	"fmt"
-	"gkk/captcha"
-	"gkk/code"
-	"gkk/expect"
-	"gkk/logger"
-	"gkk/req"
 	"net/http"
 	"time"
+
+	"github.com/benda1989/gkk/captcha"
+	"github.com/benda1989/gkk/code"
+	"github.com/benda1989/gkk/expect"
+	"github.com/benda1989/gkk/logger"
+	"github.com/benda1989/gkk/req"
 
 	"github.com/gin-gonic/gin"
 )

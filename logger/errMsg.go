@@ -2,11 +2,12 @@ package logger
 
 import (
 	"fmt"
-	"gkk/config"
 	"runtime"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/benda1989/gkk/config"
 )
 
 var errs = &errFunc{lock: new(sync.Mutex)}
