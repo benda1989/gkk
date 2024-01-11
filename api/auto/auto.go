@@ -1,11 +1,11 @@
 package auto_gin
 
 import (
-	"gkk"
 	"reflect"
 	"strings"
 
 	"github.com/benda1989/gkk/api"
+	"github.com/benda1989/gkk/logger"
 	"github.com/benda1989/gkk/req"
 	"github.com/benda1989/gkk/tool"
 	"github.com/gin-gonic/gin"
@@ -42,18 +42,18 @@ func PathRegister(g gin.IRoutes, models ...any) {
 	for _, model := range models {
 		arg := NewReqMap(model)
 		value := reflect.ValueOf(model)
-		var recordFunc func(AuthInfoHandler, string, any, gkk.MSS)
+		var recordFunc func(AuthInfoHandler, string, any, map[string][]string)
 		if r := value.MethodByName("Record"); r.IsValid() {
-			record, ok := r.Interface().(func(AuthInfoHandler, string, any, gkk.MSS))
+			record, ok := r.Interface().(func(AuthInfoHandler, string, any, map[string][]string))
 			if !ok {
-				gkk.Log.Fatal(value.Type().String() + " Record 方法不符合func(auth AuthInfoHandler,method string, id any, args MSS) 请检查!")
+				logger.Log.Fatal(value.Type().String() + " Record 方法不符合func(auth AuthInfoHandler,method string, id any, args MSS) 请检查!")
 			}
 			recordFunc = record
 		}
 		def := value.MethodByName("Default")
 		if def.IsValid() {
 			if ginPaths, ok := def.Interface().(func() (string, string, string)); !ok {
-				gkk.Log.Fatal(value.Type().String() + " Default 方法不符合func()(string, string, string) 请检查!")
+				logger.Log.Fatal(value.Type().String() + " Default 方法不符合func()(string, string, string) 请检查!")
 			} else {
 				orders, paths, methods := ginPaths()
 				arg.Order = orders
@@ -87,12 +87,12 @@ func PathRegister(g gin.IRoutes, models ...any) {
 		}
 		ginPaths, ok := paths.Interface().(func() MG)
 		if !ok {
-			gkk.Log.Fatal(value.Type().String() + " Paths 方法不符合func()gkk.MG 请检查!")
+			logger.Log.Fatal(value.Type().String() + " Paths 方法不符合func()map[string]anyG 请检查!")
 		}
 		for p, f := range ginPaths() {
 			vs := strings.Split(p, ":")
 			if len(vs) <= 1 {
-				gkk.Log.Fatal(value.Type().String() + " " + p + " 缺少参数：相对路径")
+				logger.Log.Fatal(value.Type().String() + " " + p + " 缺少参数：相对路径")
 			}
 			funName := tool.FuncNameReal(f)
 			if strings.Contains(funName, "Auth") {
@@ -106,7 +106,7 @@ func PathRegister(g gin.IRoutes, models ...any) {
 	}
 }
 
-func newGinHandlerFunc(r *ReqMap, f GinHandler, auth func(*gin.Context) AuthInfoHandler, isAdmin bool, record func(AuthInfoHandler, string, any, gkk.MSS)) gin.HandlerFunc {
+func newGinHandlerFunc(r *ReqMap, f GinHandler, auth func(*gin.Context) AuthInfoHandler, isAdmin bool, record func(AuthInfoHandler, string, any, map[string][]string)) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		nc := &Context{
 			Context: c,
@@ -128,7 +128,7 @@ type Context struct {
 	Context  *gin.Context
 	Req      ReqMap
 	auth     AuthInfoHandler
-	record   func(AuthInfoHandler, string, any, gkk.MSS)
+	record   func(AuthInfoHandler, string, any, map[string][]string)
 	isAdmin  bool
 	IfReturn bool
 }
@@ -159,22 +159,22 @@ func (C *Context) Ids() []uint {
 	api.BindParam(C.Context, id)
 	return id.Id
 }
-func (C *Context) Form() gkk.M {
+func (C *Context) Form() map[string]any {
 	return C.Req.DecodeForm(C.Context)
 }
-func (C *Context) FormPSO() (id string, where gkk.M, p req.PageSizeOrder) {
+func (C *Context) FormPSO() (id string, where map[string]any, p req.PageSizeOrder) {
 	return C.Req.DecodeFormWithPSO(C.Context)
 }
-func (C *Context) Json() gkk.M {
+func (C *Context) Json() map[string]any {
 	return C.Req.DecodeJson(C.Context)
 }
-func (C *Context) JsonPK() (any, gkk.M) {
+func (C *Context) JsonPK() (any, map[string]any) {
 	re := C.Req.DecodeJson(C.Context)
 	id := re[C.Req.PK()]
 	delete(re, C.Req.PK())
 	return id, re
 }
-func (C *Context) CommentMap() gkk.MS {
+func (C *Context) CommentMap() map[string]string {
 	return C.Req.CommentMap()
 }
 func (C *Context) ClearAuth() *Context {
@@ -187,7 +187,7 @@ func (C *Context) CheckAuth(db *gorm.DB) *gorm.DB {
 	}
 	return db
 }
-func (C *Context) Get(where gkk.M, preloads ...string) (any, int64) {
+func (C *Context) Get(where map[string]any, preloads ...string) (any, int64) {
 	id, w, p := C.FormPSO()
 	if len(id) > 0 {
 		w[C.Req.PK()] = id
@@ -201,7 +201,7 @@ func (C *Context) Get(where gkk.M, preloads ...string) (any, int64) {
 		return C.List(w, p, preloads...)
 	}
 }
-func (C *Context) GetOne(where gkk.M, preloads ...string) any {
+func (C *Context) GetOne(where map[string]any, preloads ...string) any {
 	db, re := C.DBM()
 	for k, v := range where {
 		db = db.Where(k, v)
@@ -212,7 +212,7 @@ func (C *Context) GetOne(where gkk.M, preloads ...string) any {
 	db.Find(re)
 	return re
 }
-func (C *Context) GetAll(where gkk.M, preloads ...string) any {
+func (C *Context) GetAll(where map[string]any, preloads ...string) any {
 	db, res := C.DBMS()
 	if where != nil {
 		for k, v := range where {
@@ -229,7 +229,7 @@ func (C *Context) GetAll(where gkk.M, preloads ...string) any {
 	return res
 }
 
-func (C *Context) List(w gkk.M, p req.PageSizeOrder, preloads ...string) (any, int64) {
+func (C *Context) List(w map[string]any, p req.PageSizeOrder, preloads ...string) (any, int64) {
 	var count int64
 	db, res := C.DBMS()
 	for k, v := range w {

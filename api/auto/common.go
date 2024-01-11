@@ -1,7 +1,7 @@
 package auto_gin
 
 import (
-	"gkk"
+	"github.com/benda1989/gkk/logger"
 
 	"github.com/benda1989/gkk/api"
 	"github.com/benda1989/gkk/compare"
@@ -31,7 +31,7 @@ func getDefaultMethod(key string) (string, string, func(*Context)) {
 	case "SELECT":
 		return "GET", "/select", dC.Select
 	}
-	gkk.Log.Fatal("Default 暂不支持该 " + key + " 方法")
+	logger.Log.Fatal("Default 暂不支持该 " + key + " 方法")
 	return "", "", nil
 }
 
@@ -50,7 +50,7 @@ func (c *defaultContext) Post(C *Context) {
 		if id, ok := tool.Struct2Map(model)[C.Req.PK()]; ok {
 			C.record(C.auth, "POST", id, nil)
 		} else {
-			gkk.Log.Error("新建记录数据解析失败，请检查主键json配置是否一致")
+			logger.Log.Error("新建记录数据解析失败，请检查主键json配置是否一致")
 		}
 	}
 }
@@ -62,7 +62,7 @@ func (c *defaultContext) Put(C *Context) {
 		w[C.auth.Key()] = C.auth.GetId()
 	}
 	if C.record != nil {
-		re := gkk.M{}
+		re := map[string]any{}
 		defaultDB.Model(C.Req.Model()).First(re, id)
 		C.record(C.auth, "PUT", id, compare.MapTrans(w, re, C.CommentMap()))
 	}
@@ -78,7 +78,7 @@ func (c *defaultContext) Get(C *Context) {
 func (c *defaultContext) Delete(C *Context) {
 	id := C.Id()
 	if C.record != nil {
-		re := gkk.M{}
+		re := map[string]any{}
 		defaultDB.Model(C.Req.Model()).First(re, id)
 		C.record(C.auth, "DELETE", id, nil)
 	}
@@ -93,7 +93,7 @@ func (a *defaultContext) Active(c *Context) {
 	id := c.Id()
 	c.DB().Where(c.Req.PK(), id).Update("status", gorm.Expr("case when status = 1 then 2 else 1 end"))
 	if c.record != nil {
-		re := gkk.M{}
+		re := map[string]any{}
 		defaultDB.Model(c.Req.Model()).First(re, id)
 	}
 }

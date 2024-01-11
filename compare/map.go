@@ -1,8 +1,6 @@
 package compare
 
 import (
-	"gkk"
-
 	"github.com/benda1989/gkk/str"
 )
 
@@ -11,7 +9,7 @@ func Map(n, o map[string]any) map[string][]string {
 }
 
 func MapTrans(n, o map[string]any, trans map[string]string) map[string][]string {
-	re := gkk.MSS{}
+	re := map[string][]string{}
 	for k, v := range n {
 		if vv, ok := o[k]; ok {
 			var ns, old string
