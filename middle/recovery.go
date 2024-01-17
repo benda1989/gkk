@@ -7,10 +7,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/benda1989/gkk/code"
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/logger"
-	"github.com/benda1989/gkk/str"
+	"gkk/code"
+	"gkk/expect"
+	"gkk/logger"
+	"gkk/str"
+
 	"github.com/gin-gonic/gin"
 )
 

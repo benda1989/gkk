@@ -7,8 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/logger"
+	"gkk/expect"
+	"gkk/logger"
+
 	"github.com/gin-gonic/gin"
 )
 

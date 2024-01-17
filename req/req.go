@@ -4,9 +4,10 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/benda1989/gkk/code"
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/tool"
+	"gkk/code"
+	"gkk/expect"
+	"gkk/tool"
+
 	"gorm.io/gorm"
 )
 

@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/benda1989/gkk/config"
-	"github.com/benda1989/gkk/logger"
-	"github.com/benda1989/gkk/tool"
+	"gkk/config"
+	"gkk/logger"
+	"gkk/tool"
 
 	"github.com/go-redis/redis/v8"
 	"golang.org/x/sync/singleflight"

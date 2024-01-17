@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/benda1989/gkk/cache"
-	"github.com/benda1989/gkk/captcha"
-	"github.com/benda1989/gkk/code"
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/tool"
+	"gkk/cache"
+	"gkk/captcha"
+	"gkk/code"
+	"gkk/expect"
+	"gkk/tool"
+
 	"github.com/gin-gonic/gin"
 )
 

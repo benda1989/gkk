@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/benda1989/gkk/cache"
+	"gkk/cache"
 )
 
 var c *DigitCaptcha

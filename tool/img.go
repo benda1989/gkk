@@ -8,7 +8,7 @@ import (
 	"io"
 	"math"
 
-	"github.com/benda1989/gkk/expect"
+	"gkk/expect"
 
 	"github.com/nfnt/resize"
 )

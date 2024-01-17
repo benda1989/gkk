@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/benda1989/gkk/config"
+	"gkk/config"
 
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/sirupsen/logrus"

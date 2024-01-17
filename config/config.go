@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"reflect"
 
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/tool"
+	"gkk/expect"
+	"gkk/tool"
 
 	"gopkg.in/yaml.v3"
 )

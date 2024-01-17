@@ -6,12 +6,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/benda1989/gkk/api/doc"
-	"github.com/benda1989/gkk/code"
-	"github.com/benda1989/gkk/config"
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/middle"
-	"github.com/benda1989/gkk/tool"
+	"gkk/api/doc"
+	"gkk/code"
+	"gkk/config"
+	"gkk/expect"
+	"gkk/middle"
+	"gkk/tool"
 
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"

@@ -1,4 +1,4 @@
-module github.com/benda1989/gkk
+module gkk
 
 go 1.18
 

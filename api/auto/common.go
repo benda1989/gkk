@@ -1,13 +1,14 @@
 package auto_gin
 
 import (
-	"github.com/benda1989/gkk/logger"
+	"gkk/logger"
 
-	"github.com/benda1989/gkk/api"
-	"github.com/benda1989/gkk/compare"
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/req"
-	"github.com/benda1989/gkk/tool"
+	"gkk/api"
+	"gkk/compare"
+	"gkk/expect"
+	"gkk/req"
+	"gkk/tool"
+
 	"gorm.io/gorm"
 )
 

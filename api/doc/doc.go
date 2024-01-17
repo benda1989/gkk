@@ -10,7 +10,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/benda1989/gkk/expect"
+	"gkk/expect"
+
 	"github.com/gin-gonic/gin"
 )
 

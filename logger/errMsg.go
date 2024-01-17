@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/benda1989/gkk/config"
+	"gkk/config"
 )
 
 var errs = &errFunc{lock: new(sync.Mutex)}

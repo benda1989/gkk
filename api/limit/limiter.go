@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/benda1989/gkk/captcha"
-	"github.com/benda1989/gkk/code"
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/logger"
-	"github.com/benda1989/gkk/req"
+	"gkk/captcha"
+	"gkk/code"
+	"gkk/expect"
+	"gkk/logger"
+	"gkk/req"
 
 	"github.com/gin-gonic/gin"
 )

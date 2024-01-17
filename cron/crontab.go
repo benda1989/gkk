@@ -4,8 +4,9 @@ import (
 	"reflect"
 	"runtime"
 
-	"github.com/benda1989/gkk/middle"
-	"github.com/benda1989/gkk/tool"
+	"gkk/middle"
+	"gkk/tool"
+
 	"github.com/robfig/cron"
 )
 

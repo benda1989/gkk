@@ -4,10 +4,11 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/benda1989/gkk/api"
-	"github.com/benda1989/gkk/logger"
-	"github.com/benda1989/gkk/req"
-	"github.com/benda1989/gkk/tool"
+	"gkk/api"
+	"gkk/logger"
+	"gkk/req"
+	"gkk/tool"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

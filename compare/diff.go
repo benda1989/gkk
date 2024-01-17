@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/benda1989/gkk/str"
+	"gkk/str"
 )
 
 type JsonDiff struct {

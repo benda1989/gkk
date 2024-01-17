@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/benda1989/gkk/code"
+	"gkk/code"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

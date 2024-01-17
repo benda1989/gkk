@@ -3,10 +3,11 @@ package limit
 import (
 	"fmt"
 
-	"github.com/benda1989/gkk/api"
-	"github.com/benda1989/gkk/captcha"
-	"github.com/benda1989/gkk/code"
-	"github.com/benda1989/gkk/expect"
+	"gkk/api"
+	"gkk/captcha"
+	"gkk/code"
+	"gkk/expect"
+
 	"github.com/gin-gonic/gin"
 )
 

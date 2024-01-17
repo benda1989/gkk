@@ -13,7 +13,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/benda1989/gkk/expect"
+	"gkk/expect"
 )
 
 const (

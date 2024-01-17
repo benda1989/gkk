@@ -4,7 +4,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/benda1989/gkk/cache"
+	"gkk/cache"
+
 	"github.com/gin-gonic/gin"
 )
 

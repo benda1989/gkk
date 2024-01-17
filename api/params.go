@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/benda1989/gkk/api/doc"
-	"github.com/benda1989/gkk/code"
-	"github.com/benda1989/gkk/expect"
-	"github.com/benda1989/gkk/req"
+	"gkk/api/doc"
+	"gkk/code"
+	"gkk/expect"
+	"gkk/req"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"

@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/benda1989/gkk/code"
-	"github.com/benda1989/gkk/expect"
+	"gkk/code"
+	"gkk/expect"
 )
 
 type ResponseJson struct {
