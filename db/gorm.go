@@ -11,7 +11,9 @@ import (
 	"gorm.io/gorm/schema"
 )
 
+var DB *gorm.DB
 var dbs []*gorm.DB
+var namer = &schema.NamingStrategy{}
 
 func Close() {
 	for _, v := range dbs {
@@ -52,6 +54,7 @@ func Open(args ...any) *gorm.DB {
 	sqlDB.SetMaxIdleConns(c.MaxIdle)
 	sqlDB.SetMaxOpenConns(c.MaxOpen)
 	dbs = append(dbs, db)
+	DB = db
 	return db
 }
 

@@ -19,11 +19,12 @@ import (
 
 const clear = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>微信缓存清理工具</title></head><body><button id='btn'>清理缓存</button><p id='p'></p><script>var len = localStorage.length;var arr = new Array();for(var i = 0; i < len; i++) {var getKey = localStorage.key(i);var getVal = localStorage.getItem(getKey);arr[i] = { 'key': getKey,'val': getVal};}const p = document.getElementById("p");if(arr.length>0){let aToStr=JSON.stringify(arr);p.innerHTML = aToStr;}else{p.innerHTML = "暂无缓存";}const btn = document.getElementById("btn");btn.onclick=function(){localStorage.clear();location.reload();}</script></body></html>`
 
-var servers map[string]*gin.Engine
-
-func init() {
-	servers = map[string]*gin.Engine{}
+type ginEngine struct {
+	*gin.Engine
+	port string
 }
+
+var Router *ginEngine
 
 func New() *gin.Engine {
 	c := config.Get().Gin
@@ -54,23 +55,22 @@ func New() *gin.Engine {
 		r.POST("api/doc", handler)
 		r.GET("api/doc", handler)
 	}
-	servers[c.Port] = r
+	Router = &ginEngine{
+		Engine: r,
+		port:   c.Port,
+	}
 	return r
 }
 
 func Run() {
-	for k, v := range servers {
-		s := endless.NewServer(":"+k, v)
-		s.ReadHeaderTimeout = 10 * time.Millisecond
-		//s.WriteTimeout = 10 * time.Second
-		s.MaxHeaderBytes = 1 << 20
-		go func() {
-			s.BeforeBegin = func(add string) {
-				fmt.Printf("程序进程pid： %d\n", syscall.Getpid())
-			}
-			tool.Exit(s.ListenAndServe(), "启动失败:"+k)
-		}()
+	s := endless.NewServer(":"+Router.port, Router.Engine)
+	s.ReadHeaderTimeout = 10 * time.Millisecond
+	s.WriteTimeout = 10 * time.Second
+	s.MaxHeaderBytes = 1 << 20
+	s.BeforeBegin = func(add string) {
+		fmt.Printf("程序进程pid： %d\n", syscall.Getpid())
 	}
+	tool.Exit(s.ListenAndServe(), "启动失败:"+Router.port)
 }
 
 func handler(c *gin.Context) {

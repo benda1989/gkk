@@ -2,8 +2,6 @@ package gkk
 
 import (
 	"fmt"
-	"reflect"
-
 	"github.com/benda1989/gkk/api"
 	"github.com/benda1989/gkk/cache"
 	"github.com/benda1989/gkk/config"
@@ -34,12 +32,8 @@ func init() {
 
 func Run(apps ...any) {
 	defer db.Close()
-	// 注册用户app
-	funCall(apps...)
 	// 定时服务
 	cron.Run()
-	// gin服务
-	api.Run()
 	// 循环
 	switch config.GetDefault().Db.User {
 
@@ -53,26 +47,10 @@ func Run(apps ...any) {
 
 	`)
 	}
-	select {}
-}
-
-// funCall 函数在前参数 排后，reflect调用，传递多个函数。
-func funCall(apps ...any) {
-	all := make(map[reflect.Value][]reflect.Value)
-	var flag reflect.Value
-	for _, app := range apps {
-		v := reflect.ValueOf(app)
-		if v.Kind() == reflect.Func {
-			flag = v
-			all[v] = make([]reflect.Value, 0)
-		} else {
-			if len(all) == 0 {
-				continue
-			}
-			all[flag] = append(all[flag], v)
-		}
-	}
-	for app, arg := range all {
-		app.Call(arg)
+	if api.Router != nil {
+		// gin服务
+		api.Run()
+	} else {
+		select {}
 	}
 }

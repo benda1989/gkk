@@ -30,3 +30,7 @@ func (ct Time) Value() (driver.Value, error) {
 		return t, nil
 	}
 }
+
+func ColumnName(name string) string {
+	return namer.ColumnName("", name)
+}

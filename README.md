@@ -19,6 +19,8 @@
 <br>
 ✅ 统一错误处理和提示
 <br>
+✅ 统一数据查询和更新
+<br>
 ✅ 进程结束资源自动回收
 <br>
 ✅ redis/mem 超时缓存
@@ -261,104 +263,118 @@ func PDM(db *gorm.DB, msgs ...string)
 {"code":200,"ip":"192.168.10.98","level":"info","method":"GET","msg":"Gin","period":"91.255677ms","time":"2022-02-17T11:19:44+08:00","url":"/api/v1/user"}
 ```
 
-# GIN 服务
+# 统一数据查询(范型)
+抽象类型：get[T any]  
+具备的方法：
+- FormPSO(c *gin.Context) (id string, re M, p *PageSizeOrder)
+- Form(c *gin.Context) M
+- DB() *gorm.DB
+- Model() *T
+- Slice() []*T
+- First(w M, preloads ...string) *T
+- Find(w M, preloads ...string) []*T
+- List(w M, p *PageSizeOrder, preloads ...string) ([]*T, int64)
+- Select(w any, args ...any) []IdName
+- Get(c *gin.Context)
+- Comment() MS  
 
-统一封装： 根据项目使用习惯和规则，设计规范，简化路由和参数传递环节
+实例方法：   
+NewFind[T any] (order string) *get[T]
+
+备注：  
+查询标签：cru "-" 为忽略, 前端传送字段使用form标签
+查询条件： =, >, >=, <, <=, like(英文逗号分隔条件表示or), in (英文逗号分隔条件)
+特例查询：cru: "create_at > ?"
+
+# 统一数据更新(范型)
+抽象类型：post[T any]  继承get[T any]
+具备的方法：
+
+- Req(c *gin.Context) *T
+- Create(data *T) *T
+- Update(new *T, w M) (*T, *T)
+- Active(id any, w M)
+- Delete(ids []uint, where M) []*T
+
+实例方法：   
+NewModel[T any](order string, unUpdate ...string) *post[T]
+
+备注：  
+unUpdate：用于更新时忽略字段控制，json标签为——的也会被忽略 
+
+
+# GIN 服务(范型)
+
+根据项目使用习惯和规则，设计规范，简化整体环节  
+依赖统一数据查询/更新
 
 ## 1 模型添加标签：cru
+## 2 编写路由的方法
 
-cru 参数由 ';' 分割, "-" 为忽略  
-创建/更新部分： unUpdate, unCreate  
-查询部分： =, >, >=, <, <=, like(英文逗号分隔条件表示or), in (英文逗号分隔条件)
+map[string]GinHandler[T]  
+key解析：(权限:)方式:路径
 
-## 2 编写默认配置方法 Default
-
-func () Default() order， path, method string  
-返回：默认路由前缀，启用内置的方法，默认排序
-
-- 方法：GET;POST;PUT;DELETE;ACTIVE;SELECT
+- 权限如果有，使用：auth/admin
+- 方法有：GET;POST;PUT;DELETE;ACTIVE;SELECT
 - SELECT: 用户下拉 返回 id 和 name 组成的切片
 - ACTIVE: 用来更改 status 状态，1-2 之间的变换
-- 多个以冒号分割，get 方法不传 id 则是 list
-- method 部分 添加 Auth/Admin 前缀 执行相应的用户认证
-- path 部分添加 admin 字符，method 全部执行 admin 用户认证
+- GET 方法不传 id 则是 list
 
-## 3 编写注册路由对应方法 Paths（当 3 中的基本方法无法满足需求时）
+备注：使用内置方法时，字典的值传递nil ，方法参考 getDefaultMethod
 
-func () Paths() []gkk.MG{}  
-模型注册的路由 方式：路径
 
-- 方法名具有 Auth/Admin 前缀的 执行相应的用户认证
+## 3 编写对应路由方法 GinHandler
 
-## 4 编写对应路由方法
+内置方法不满足业务需求，则可以自定义处理方法  
+func () GET(c gkk.GC[T])
+gkk.GC 有如下属性： 
+- Context  *gin.Context
+- Auth     注册的auth
+- IfReturn 
 
-func () GET(c gkk.Context)
-gkk.Context 方法：
+gkk.GC 有如下方法：  
 
 - BindJson(ptr)
 - BindParam(ptr)
--
 - Id(): query 中 id
 - Ids(): json 中的 ids
--
 - Form(): query 查询参数
 - FormFSO() id,map,pageSizeOrder: 主键，参数，分页排序
--
-- Json(): json 中全部参数
-- JsonPK() key，map: json 中更新主键和参数
--
+- Req(): json 中全部参数T
+- 
+- DB() *gorm.DB
+- DBM() (*gorm.DB, *T)
+- DBMS() (*gorm.DB, []*T)
+- Comment() MS
+- 
 - RD(any,...error) 单条返回
 - RDS(any,int64,...error) list 返回 （当 int64 为负数时：等同于 RD 返回）
--
-- Get(M, preloads ...string) (data any,count int64) 当 count 小于 0 参数 data: *Obj 否则 []*Obj
-- GetOne(M, preloads ...string) any 条件获取一条，参数 any: \*Obj
-- GetAll(M, preloads ...string) any 条件获取所有，参数 any: []\*Obj
-- List(M, preloads ...string) (any,int64) 参数 any: []\*Obj
--
-- UserId() any 用户认证的 id
-- UserInfo() (id any, name string, avatar string) 用户认证的信息
-- CheckAuth(*gorm.DB) *gorm.DB 如果配置了 auth，则添加 where 验证
--
-- DB() *gorm.DB
-- DBM() *gorm.DB, *Obj
-- DBMS() *gorm.DB, []*Obj
+- 
+- GetAuth() (w M)
+- Get(where M, preloads ...string)
+- First(w M, preloads ...string) *T
+- Find(w M, preloads ...string) []*T
+- List(w M, p *PageSizeOrder, preloads ...string) ([]*T, int64)
 
-## 5 注册
+## 4 注册
+GinRegister[T any](  
+gin.IRoutes,     
+*post[T],   
+map[string]GinHandler[T],   
+...*authHandler  
+)
 
+
+## 5 操作记录Record
+内置方法在新增/修改/删除时会调用注册的 Record方法
+record func(Auth, *Record[T])  
 ```
-router.go
-
-数据库链接，auth(非必填,方法以Auth开头)，admin(非必填,方法以Admin开头)，
-gkk.GinBaseRegister(conf.DB, middleware.Auth, middleware.Admin)
-group， 模型1，2，3。。。
-gkk.GinPathRegister(r.Group("vip"), new(model.Agent),new(model.Asset))
-
-middleware.go
-
-func Auth(c *gin.Context) gkk.AuthInfoHandler {
-	re := userInfo{}
-	//
-	return re
+type Record[T any] struct {
+	Data   *T   //操作前的数据
+	Diff   MSS  //更新世数据不一致的数据
+	Method string
 }
-
-type userInfo struct {
-	Id       uint
-	Nickname string
-	Avatar   string
-}
-
-func (u userInfo) Key() string {
-	return "agent_id"
-}
-func (u userInfo) GetId() any {
-	return u.Id
-}
-func (u userInfo) Info() (any, string, string) {
-	return u.Id, u.Nickname, u.Avatar
-}
-
 ```
-
 ## 6 路由打印
 
 ```
@@ -376,28 +392,6 @@ path注册
 
 ```
 
-## 7 注意事项：
-
-- cru 标签含有查询部分，优先使用 form 标签，不定义 form，使用 json 标签
-- cru 标签查询部分，非 like 且长度大于 4 的，会忽略字段名字
-- cru 创建和更新数据都从 body 中，使用 json 标签获取数据，校验数字类型会默认 numeric，时间类型会默认 datetime=
-- model 命名遵循 gorm，不使用单个大写字母缩写如：ID-》Id
-- 获取到的参数 需要 遍历添加 Where
-- 动态生成返回数据，速度比new慢，上线需评估性能是否满足自己的应用
-- gorm 钩子函数 Bug 修复：
-
-```
-file: go/pkg/mod/gorm.io/gorm@v1.25.2/callbacks/callmethod.go
-line: 12 添加以下代码修复Find/First等
-        if db.Statement.ReflectValue.Kind() == reflect.Interface{
-            db.Statement.ReflectValue = db.Statement.ReflectValue.Elem()
-        }
-file: go/pkg/mod/gorm.io/gorm@v1.25.2/schema/utils.go
-line: 116 修复preload
-        if reflectValue.Kind() == reflect.Interface{
-            reflectValue = reflectValue.Elem()
-        }
-```
 # 接口文档生成
 
 POST：/api/doc 开始记录   

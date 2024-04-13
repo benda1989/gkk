@@ -1,6 +1,6 @@
 module github.com/benda1989/gkk
 
-go 1.18
+go 1.21
 
 require (
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
@@ -54,10 +54,7 @@ require (
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
 )
